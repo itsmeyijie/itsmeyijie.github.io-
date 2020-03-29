@@ -154,6 +154,211 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Introduction-to-Blockchains" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/03/29/Introduction-to-Blockchains/">Introduction to Blockchains</a>
+    </h1>
+  
+
+        
+        <a href="/2020/03/29/Introduction-to-Blockchains/" class="archive-article-date">
+  	<time datetime="2020-03-29T03:23:45.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-03-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>本周我们的实验室读书会轮到我分享论文，文章是基于John Kelsey（NIST）的Introduction to Blockchains</p>
+<p>这篇论文主要的内容：</p>
+<p>1.区块链（Blockchains）解决了什么问题？</p>
+<p>2.区块链是怎么工作的？</p>
+<p>3.许可链（Permissioned blockchains）, 工作量证明（proof of work）, etc.</p>
+<p>4.总结</p>
+<p>1.区块链解决了什么问题</p>
+<hr>
+<p>首先我们用一个例子来类比说明。</p>
+<p>如果Alice 和 Bob想要通过邮箱发邮件的形式来下象棋，那要怎么才能实现呢？</p>
+<p>• Alice sends Bob “1 e4”</p>
+<p>• Bob sends back “1 … e5”</p>
+<p>• Alice sends Bob “2 Nf3”</p>
+<p>• …</p>
+<p>这每一条消息都代表一个棋子的一步移动，他们需要怎么做才能玩这个游戏呢？</p>
+<p>首先最基础的，现在没有这样一个真实的棋盘可以随时看现在处于什么状态，但是他们还是要对这个棋盘的状态达成一致才行。</p>
+<p>但是这是可以做到的，因为我们知道</p>
+<p>1.他们都知道要棋盘的最初状态，棋子们最初拜访的位置需要是固定的。</p>
+<p>2.他们都需要到目前为止发送的所有的消息序列，这些消息构成了整个比赛的文字记录</p>
+<p>3.因此，他们随时可以利用以上的信息重构棋盘的状态。</p>
+<p>这个思想就是 If we agree on history, we agree on the present state of the world!</p>
+<p>如果我们能认同历史的记录，那我们就能认同现在的状态。</p>
+<p>那这个与区块链有什么关系呢？</p>
+<p>1.我们有一些分布式的系统</p>
+<p>\2. 我们需要对一些系统的状态达成一致</p>
+<p>3.我们都认同系统的初始状态</p>
+<p>4.一个区块链包含着个人交易的历史记录</p>
+<p>5.因此我们也能认同这个系统的当前状态</p>
+<p>区块链解决的就是这样一个问题，区块链让互不信任的对象对历史记录达成一致，因此让他们对系统现在的状态也能达成一致。</p>
+<p>为什么这很重要呢？拿比特币来做例子，假设我给你100BTC，你需要知道你的账户里面是否增加了100BTC，所以你需要知道整个系统<strong>现在最新</strong>的状态。</p>
+<p>一个区块链就是让我们能对系统的状态达成一致，即使我们并不相互信任。相当于一个公共的开放的账本，但是我们每个人却可以相信现在系统的状态。现在每一个账户里有多少钱这样的。 因为我们相信初始状态+相信历史记录 -&gt;所以我们相信现在这个账本的状态。</p>
+<p><strong>区块链解决的问题就是，在这样一个系统中，我们不需要一个可信赖的状态的仲裁者（Trusted Arbiter）。</strong></p>
+<p>什么叫做可信赖的仲裁者呢？</p>
+<p>其实如果有一个完全可以信赖的仲裁者的话，我们就不需要区块链了。我们就按这个仲裁的人说的做就行了。</p>
+<p>对于一个支付系统，这种仲裁者就是银行，银行能</p>
+<p>1.给我们提供官方的交易记录，还有账户余额</p>
+<p>2.你想要花钱的时候，只需要给银行发送一个消息</p>
+<p>3.银行能允许你用你的钱来交易，而且更新你的余额。</p>
+<p>但是存在trusted arbiter 有什么问题呢？</p>
+<p>1.Single point of failure  单点失败，如果这个trusted arbiter</p>
+<p>不工作了，那整个系统都不能工作了。</p>
+<p>2.Concentration of power 权力太过集中，TA可以审查交易，也可能修改记录</p>
+<p>3.Maybe there’s nobody we all trust 也许没有一个人让我们都相信</p>
+<p>We get the functionality of a trusted arbiter… …without needing a trusted arbiter 所以很重要的一个功能就是区块链帮我们去掉了trusted arbiter也就是认证机构但是使系统的机制依然可以信任</p>
+<hr>
+<p>那区块链怎么工作的呢？</p>
+<p>1.一个区块链其实就是一个持续增长的哈希链表，里面的每个记录称为区块。</p>
+<p>2.我们有一些程序能往区块链上加区块。</p>
+<p>3.新的区块要有一些条件才能是有效的。Enforced by consensus-–chains with</p>
+<p>invalid blocks won’t be accepted.有一个共识，无效的区块链是不被接受的。</p>
+<p>4.有一些程序能够决定在备选的区块链中哪个是有效的</p>
+<p>当Alice和Bob对于历史记录存在异议的时候，能够有一些程序决定谁是正确的。</p>
+<hr>
+<p>首先看一下每个区块的构成：</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/17759970-15ef6191d8c366a3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>每个区块由两部分构成：</p>
+<p>1.区块头（Head）：记录当前区块的特征值</p>
+<p>2.区块体（Body）：实际数据</p>
+<p>而区块头又由多项特征构成，生成时间</p>
+<p>实际数据（即区块体）的哈希</p>
+<p>上一个区块的哈希 等等</p>
+<p>…</p>
+<p>这里我们还要理解什么是哈希（hash)</p>
+<p><strong>加密哈希函数必须满足以下一组标准才能在区块链中使用：</strong></p>
+<p><strong>单向性**</strong>-** 必须很容易计算给定输入的输出，但不可能计算给定输出的输入。</p>
+<p><strong>伪随机-</strong> 输入的变化将在输出中产生不可预见的变化。 如果输入“2”的散列值是“4”，则输入“3”的散列最好不是6。</p>
+<p><strong>抗冲突**</strong>-** 找到哈希函数的两个输入导致相同的输出应该很难（不能读取）。</p>
+<p><strong>确定性**</strong>-** 相同的输入总是需要产生相同的输出。</p>
+<p>哈希函数就是把无论任何长度的文件作为输入，都生成固定长度的字符串。而区块链使用的加密函数还需要一个特点那就是无碰撞（collusion）。</p>
+<p>哈希碰撞就是指  对于不同的X 和Y  它的  它的hash(X) == hash(Y)  这样就是产生了碰撞。</p>
+<p>其实这个特点在理论上并不成立，比如，比特币使用的SHA256算法，会有2^256种输出，如果我们进行2^256+1次输入，那么必然会产生一次碰撞；甚至从概率的角度看，进行2^130次输入就会有99%的可能发生一次碰撞。不过我们可以计算一下，假设一台计算机以每秒10000次的速度进行哈希运算，要经过10^27年才能完成2^128次哈希！甚至可以这么说，即便是人类制造的所有计算机自宇宙诞生开始一直运算到今天，发现碰撞的几率也是极其小的。</p>
+<p>为什么这个特性在区块链中这么重要呢？</p>
+<p>因为由此我们可以得出两个推论：</p>
+<p>推论1：每个区块的哈希都是不一样的，就像每个人的指纹一样，可以通过哈希标识区块。</p>
+<p>推论2：如果区块的内容变了，它的哈希一定会改变。那么也就是说 ，没有人能够改变X却不改变它的HASH值。</p>
+<p>我们说一个区块链其实就是一个持续增长的哈希链。</p>
+<p>那么哈希链是一个记录序列，其中每个记录包含链中前一个记录的哈希，以及当前所有记录内容的哈希。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/17759970-d6f805a5dddfffe9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>SHA256算法由美国国家安全局（NSA）所设计，是目前区块链中运用最广的加密算法。SHA256算法的设计思路主要是依赖于一个优秀的HASH散列算法的特点：任何微小的输入都有可能对输出产生巨大的影响，以及HASH算法极低的碰撞概率。</p>
+<p>一个Hash函数的安全性高低最终要看能否找到函数的整体碰撞，由于SHA-256算法具有迭代型结构，根据迭代算法的雪崩效应，随着轮数的增加，相应的整体碰撞复杂度会急剧上升，这就使得找到整体碰撞变得非常困难，直至目前现有的攻击还无法找到SHA-256的一个整体碰撞。因此，SHA-256算法被认为是目前最安全的Hash函数之一。</p>
+<p>这样做的话，如果我们使用了SHA-256这样的安全的HASH函数，那么那么当我确定了N，那么N这一块也就确定了N-1,N-1这个块就确定了N-2，这样就确定了所有的块。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/17759970-80e99586d3a1591f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>Hash = SHA256( 区块头 )</p>
+<p>所以当攻击者修改了hash链某一个记录，那么hash链后面所有的记录也都需要修改</p>
+<p>反过来如果我们认定了第N个记录，也就代表我们认定了N之前所有的记录，哪些就像上了锁一样不能修改了。</p>
+<p>上面就是区块哈希的计算公式，SHA256是区块链的哈希算法。注意，这个公式里面只包含区块头，不包含区块体，也就是说，哈希由区块头唯一决定，</p>
+<p>前面说过，区块头包含很多内容，其中有当前区块体的哈希，还有上一个区块的哈希。这意味着，如果当前区块体的内容变了，或者上一个区块的哈希变了，一定会引起当前区块的哈希改变。</p>
+<p>这一点对区块链有重大意义。如果有人修改了一个区块，该区块的哈希就变了。为了让后面的区块还能连到它（因为下一个区块包含上一个区块的哈希），该人必须依次修改后面所有的区块，否则被改掉的区块就脱离区块链了。由于后面要提到的原因，哈希的计算很耗时，短时间内修改多个区块几乎不可能发生，除非有人掌握了全网51%以上的计算能力。</p>
+<p><strong>正是通过这种联动机制，区块链保证了自身的可靠性，数据一旦写入，就无法被篡改。这就像历史一样，发生了就是发生了，从此再无法改变。</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/17759970-81be41cff1859c45.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>区块链就是使用了Hash链的结构，每一个区块包含前一块的hash,一些transactions记录相当于内容，还有一个Nonce，这个是与构建区块链有关的。</p>
+<p>现在我们要讲一下如何添加区块。</p>
+<p>首先我们没有认证机构去确定谁可以添加，哪样的区块是有效的。这样其实每种区块链都不同的要求。</p>
+<p>比如比特币的话，需要Signatures，余额不能为－，还需要正确的工作量证明correct</p>
+<p>proof-of-work。如果没有这些条件这个块是不能被其他人接受的。</p>
+<p>还有一个问题就是，因为是分布式的，那么如果两个人同时向区块链写入数据，也就是说，同时有两个区块加入，因为它们都连着前一个区块，就形成了分叉。这时应该采纳哪一个区块呢？这样也有一些技术解决这个问题。</p>
+<p>首先，我们添加块去要证明谁能添加，证明添加。</p>
+<p>两种主要的方法，一种是 工作量证明，还有许可链。除此之外，还有权益证明（PoS），存储证明(Proof of storage)等等许多</p>
+<p>首先讲工作量证明，工作量证明系统主要特征是客户端需要做一定难度的工作得出一个结果，验证方却很容易通过结果来检查出客户端是不是做了相应的工作。这种方案的一个核心特征是不对称性：工作对于请求方是适中的，对于验证方则是易于验证的。它与验证码不同，验证码的设计出发点是易于被人类解决而不易被计算机解决。</p>
+<p>这样做优点在于：</p>
+<p>1.限制了区块的增长</p>
+<p>2.添加无效的区块很昂贵</p>
+<p>3.能够发生分歧决定谁能添加：工作量大的那个添加</p>
+<p>首先，讲一下工作量证明的原理。</p>
+<p>举个例子，给定的一个基本的字符串”Hello, world!”，我们给出的工作量要求是，可以在这个字符串后面添加一个叫做nonce的整数值，对变更后（添加nonce)的字符串进行SHA256哈希运算，如果得到的哈希结果（以16进制的形式表示）是以”0000”开头的，则验证通过。为了达到这个工作量证明的目标。我们需要不停的递增nonce值，对得到的新字符串进行SHA256哈希运算。按照这个规则，我们需要经过4251次计算才能找到恰好前4位为0的哈希散列。</p>
+<p>如果我们用比较专业的公式表达出来这个要求就是</p>
+<p>SHA256(C||N) &lt; L l</p>
+<p>Hashcash的发明者就是<strong>Adam Back 最初用在防止垃圾邮件 。对于发送少量邮件来说，这根本不成问题，当时如果你想大批量发送垃圾邮件，那面临的计算量将非常巨大</strong></p>
+<p>工作量证明解决的问题是：</p>
+<p>1.解决分歧，工作量大的添加</p>
+<p>2.因为添加一个块需要很大力气，所以避免了人们去添加无意义的块（无用）</p>
+<p>但是也带来了很多问题</p>
+<p>1.消耗了大量的能量，2.所以比特币我们成为挖矿。使用专用的采矿设备优化工作证明。</p>
+<p>3.环境影响—使用大量的电力，除了保持区块链工作外，没有完成任何有用的目标</p>
+<p>2  而且很慢 比特币的经验法则是等待6个块(大约一个小时)以确保交易成功。</p>
+<p>如果两个人同时向区块链写入数据，也就是说，同时有两个区块加入，因为它们都连着前一个区块，就形成了分叉。这时应该采纳哪一个区块呢？</p>
+<p>比特币中现在的规则是，新节点总是采用最长的那条区块链。如果区块链有分叉，将看哪个分支在分叉点后面，先达到6个新区块（称为”六次确认”）。按照10分钟一个区块计算，一小时就可以确认。</p>
+<p><strong>在比特币系统中，交易是记录在区块中的，而每个区块的平均产生时间为10分钟，在比特币系统中规定只有等待6个区块产生后，交易才能进行最终确认，这就是为什么比特币系统中交易需要1个小时进行确认。</strong></p>
+<p><strong>如果只有1次确认，那么有可能这个区块不在最长链上，而在临时分叉上，那么这个交易不被确认的概率非常高。而经过6个区块的确认，打包有当前交易的区块在主链上的机率才能接近100%，所以这就是为什么选择6个区块进行确认的原因。换言之，在连续6个区块被确认后，区块信息基本上没有办法被篡改，所以交易才算最终完成。</strong></p>
+<p><strong>由于新区块的生成速度由计算能力决定，所以这条规则就是说，拥有大多数计算能力的那条分支，就是正宗的区块链。</strong></p>
+<hr>
+<p><strong>为了解决这个问题，就有了其他的方法，不使用工作量证明，比如许可链。</strong></p>
+<p><strong>许可链（Permissioned Blockchain）是指参与到区块链系统中的每个节点都是经过许可的，未经许可的节点是不可以接入到系统中，因此私有链和联盟连都属于许可链。有些许可链是没有代币机制，因为不需要通过代币来鼓励节点竞争记账。</strong></p>
+<p>私有链（Private Blockchain<strong>）是指其写入权限由某个组织和机构控制的区块链，参与节点的资格会被严格限制。由于参与节点是有限和可控的</strong>，因此私有链往往可以有极快的交易速度、更好的隐私保护、更低的交易成本、不容易被恶意攻击，并且能做到身份认证等金融行业必需的要求。相比中心化数据库，<strong>私有链能够防止机构内单节</strong>点故意隐瞒或者篡改数据，即使发生错误，也能够迅速发现来源。因此许多大型金融机构在目前更加倾向于使用私有链技术。</p>
+<p>联盟链（Consortium Blockchain）<strong>是指有若干个机构共同参与管理的区块链</strong>，每个机构都运行着一个或多个节点，其中的数据只允许系统内不同的机构进行读写和发送交易，并且共同来记录交易数据。</p>
+<p>私有链和联盟链之间的设计隐私权限会有不同，联盟链中的权限设计要求往往会更为复杂。</p>
+<p>公有链的许可链的区别其实有Incentive design公有链有代币机制，<strong>节点竞争记账，</strong>大家会自主的遵守协议。公有链中，</p>
+<p>Why do we trust trustees? 而且私有链中，我们为什么信任这些人呢？可能有法律约束，声誉，什么的。</p>
+<p>但是，建立依赖于<strong>外部执行机制</strong>的密码协议通常是一个坏主意。</p>
+<p>这些是permissioned blockchain需要解决的问题。</p>
+<p>应用</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/17759970-85d0a0070aab3747.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>poc</p>
+<p>分布式存储和去中心化一结合,你认为当前基于工作量证明的比特币挖矿行为浪费了宝贵的电力。然而，却有办法让这种浪费更有意义，比如本文将要说的，矿工们必须分布式存储一个有意义且重要的大文件，才能实施挖矿行为，换句话说，不是随便一个矿工就可以肆意浪费电能赚钱的，你必须参与分布式存储。谁存的多，谁能添加新的快。</p>
+<p><a href="https://blog.csdn.net/dog250/article/details/79917805" target="_blank" rel="noopener">https://blog.csdn.net/dog250/article/details/79917805</a></p>
+<p>Proof of stake</p>
+<p>电力和硬件成本远远低于工作量证明机制，股权证明显得更加的友好和高效，鼓励越来越多的人参与进来。大部分基于股权证明的加密货币通过手续费的形式支付奖励以验证交易并创建新的区块。</p>
+<p><a href="https://blog.csdn.net/luckydog612/article/details/80463449?depth_1-utm_source=distribute.pc_relevant.none-task&amp;utm_source=distribute.pc_relevant.none-task" target="_blank" rel="noopener">https://blog.csdn.net/luckydog612/article/details/80463449?depth_1-utm_source=distribute.pc_relevant.none-task&amp;utm_source=distribute.pc_relevant.none-task</a></p>
+<p>原文链接：<a href="https://blog.csdn.net/dog250/article/details/79917805" target="_blank" rel="noopener">https://blog.csdn.net/dog250/article/details/79917805</a></p>
+<p>总结：</p>
+<p>1.Blockchains let us agree on history</p>
+<p>2.A blockchain is a hash chain with some other stuff added 但是增加了一些条件，比如</p>
+<p>3.Permissioned vs Proof-of-work</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/03/29/Introduction-to-Blockchains/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-hello-world" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -607,7 +812,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2019 Yang Yijie
+    		&copy; 2020 Yang Yijie
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
